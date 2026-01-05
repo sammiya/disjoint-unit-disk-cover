@@ -1,0 +1,227 @@
+scale = 100000000
+
+[[points]]
+x = 10000000
+y = 0
+group = 0
+
+[[points]]
+x = -5000000
+y = 8660254
+group = 0
+
+[[points]]
+x = -5000000
+y = -8660254
+group = 0
+
+[[points]]
+x = 72000000
+y = 0
+group = 0
+
+[[points]]
+x = 68801242
+y = 21222373
+group = 0
+
+[[points]]
+x = 59489192
+y = 40559044
+group = 0
+
+[[points]]
+x = 44891266
+y = 56291867
+group = 0
+
+[[points]]
+x = 26304554
+y = 67022910
+group = 0
+
+[[points]]
+x = 5380567
+y = 71798673
+group = 0
+
+[[points]]
+x = -16021507
+y = 70194810
+group = 0
+
+[[points]]
+x = -36000000
+y = 62353829
+group = 0
+
+[[points]]
+x = -52779735
+y = 48972437
+group = 0
+
+[[points]]
+x = -64869758
+y = 31239629
+group = 0
+
+[[points]]
+x = -71195819
+y = 10731043
+group = 0
+
+[[points]]
+x = -71195819
+y = -10731043
+group = 1
+
+[[points]]
+x = -64869758
+y = -31239629
+group = 1
+
+[[points]]
+x = -52779735
+y = -48972437
+group = 1
+
+[[points]]
+x = -36000000
+y = -62353829
+group = 1
+
+[[points]]
+x = -16021507
+y = -70194810
+group = 1
+
+[[points]]
+x = 5380567
+y = -71798673
+group = 1
+
+[[points]]
+x = 26304554
+y = -67022910
+group = 2
+
+[[points]]
+x = 44891266
+y = -56291867
+group = 2
+
+[[points]]
+x = 59489192
+y = -40559044
+group = 2
+
+[[points]]
+x = 68801242
+y = -21222373
+group = 2
+
+[[points]]
+x = 100010000
+y = 0
+group = 2
+
+[[points]]
+x = 95566836
+y = 29478465
+group = 0
+
+[[points]]
+x = 82632140
+y = 56337639
+group = 0
+
+[[points]]
+x = 62355215
+y = 78190967
+group = 0
+
+[[points]]
+x = 36537756
+y = 93096684
+group = 0
+
+[[points]]
+x = 7473757
+y = 99730352
+group = 0
+
+[[points]]
+x = -22254319
+y = 97502540
+group = 0
+
+[[points]]
+x = -50005000
+y = 86611201
+group = 0
+
+[[points]]
+x = -73312518
+y = 68024076
+group = 0
+
+[[points]]
+x = -90105896
+y = 43392713
+group = 3
+
+[[points]]
+x = -98892971
+y = 14905717
+group = 3
+
+[[points]]
+x = -98892971
+y = -14905717
+group = 1
+
+[[points]]
+x = -90105896
+y = -43392713
+group = 1
+
+[[points]]
+x = -73312518
+y = -68024076
+group = 1
+
+[[points]]
+x = -50005000
+y = -86611201
+group = 1
+
+[[points]]
+x = -22254319
+y = -97502540
+group = 1
+
+[[points]]
+x = 7473757
+y = -99730352
+group = 1
+
+[[points]]
+x = 36537756
+y = -93096684
+group = 2
+
+[[points]]
+x = 62355215
+y = -78190967
+group = 2
+
+[[points]]
+x = 82632140
+y = -56337639
+group = 2
+
+[[points]]
+x = 95566836
+y = -29478465
+group = 2
+

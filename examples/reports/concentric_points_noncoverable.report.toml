@@ -1,0 +1,185 @@
+partitions_evaluated = 13506026
+status = 'non_coverable'
+
+[input]
+scale = 100000000
+
+    [[input.points]]
+    x = 10000000
+    y = 0
+
+    [[input.points]]
+    x = -5000000
+    y = 8660254
+
+    [[input.points]]
+    x = -5000000
+    y = -8660254
+
+    [[input.points]]
+    x = 72100000
+    y = 0
+
+    [[input.points]]
+    x = 68896799
+    y = 21251848
+
+    [[input.points]]
+    x = 59571816
+    y = 40615376
+
+    [[input.points]]
+    x = 44953615
+    y = 56370050
+
+    [[input.points]]
+    x = 26341088
+    y = 67115997
+
+    [[input.points]]
+    x = 5388040
+    y = 71898394
+
+    [[input.points]]
+    x = -16043759
+    y = 70292302
+
+    [[input.points]]
+    x = -36050000
+    y = 62440432
+
+    [[input.points]]
+    x = -52853040
+    y = 49040454
+
+    [[input.points]]
+    x = -64959855
+    y = 31283018
+
+    [[input.points]]
+    x = -71294703
+    y = 10745947
+
+    [[input.points]]
+    x = -71294703
+    y = -10745947
+
+    [[input.points]]
+    x = -64959855
+    y = -31283018
+
+    [[input.points]]
+    x = -52853040
+    y = -49040454
+
+    [[input.points]]
+    x = -36050000
+    y = -62440432
+
+    [[input.points]]
+    x = -16043759
+    y = -70292302
+
+    [[input.points]]
+    x = 5388040
+    y = -71898394
+
+    [[input.points]]
+    x = 26341088
+    y = -67115997
+
+    [[input.points]]
+    x = 44953615
+    y = -56370050
+
+    [[input.points]]
+    x = 59571816
+    y = -40615376
+
+    [[input.points]]
+    x = 68896799
+    y = -21251848
+
+    [[input.points]]
+    x = 100010000
+    y = 0
+
+    [[input.points]]
+    x = 95566836
+    y = 29478465
+
+    [[input.points]]
+    x = 82632140
+    y = 56337639
+
+    [[input.points]]
+    x = 62355215
+    y = 78190967
+
+    [[input.points]]
+    x = 36537756
+    y = 93096684
+
+    [[input.points]]
+    x = 7473757
+    y = 99730352
+
+    [[input.points]]
+    x = -22254319
+    y = 97502540
+
+    [[input.points]]
+    x = -50005000
+    y = 86611201
+
+    [[input.points]]
+    x = -73312518
+    y = 68024076
+
+    [[input.points]]
+    x = -90105896
+    y = 43392713
+
+    [[input.points]]
+    x = -98892971
+    y = 14905717
+
+    [[input.points]]
+    x = -98892971
+    y = -14905717
+
+    [[input.points]]
+    x = -90105896
+    y = -43392713
+
+    [[input.points]]
+    x = -73312518
+    y = -68024076
+
+    [[input.points]]
+    x = -50005000
+    y = -86611201
+
+    [[input.points]]
+    x = -22254319
+    y = -97502540
+
+    [[input.points]]
+    x = 7473757
+    y = -99730352
+
+    [[input.points]]
+    x = 36537756
+    y = -93096684
+
+    [[input.points]]
+    x = 62355215
+    y = -78190967
+
+    [[input.points]]
+    x = 82632140
+    y = -56337639
+
+    [[input.points]]
+    x = 95566836
+    y = -29478465
