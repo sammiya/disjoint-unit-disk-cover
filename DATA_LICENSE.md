@@ -13,7 +13,7 @@ Files not listed here are not covered by this document.
 
 **Attribution**: Please credit Takuto Nakai as the discoverer and cite the associated paper:
 
-- Takuto Nakai and Shuya Bundo, "A 44-Point Configuration Not Coverable by Disjoint Unit Disks", submitted to EuroCG 2026.
+- Takuto Nakai and Shuya Bundo, "A 44-Point Configuration Not Coverable by Disjoint Unit Disks", accepted at EuroCG 2026.
 
 For questions about this repository (including licensing), please contact the maintainer: Shuya Bundo.
 
