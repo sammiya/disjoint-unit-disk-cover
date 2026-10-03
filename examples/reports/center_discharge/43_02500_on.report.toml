@@ -1,0 +1,177 @@
+partitions_evaluated = 90493
+status = 'non_coverable'
+
+[input]
+scale = 100000000
+
+    [[input.points]]
+    x = -87500000
+    y = -50000000
+
+    [[input.points]]
+    x = -62500000
+    y = -50000000
+
+    [[input.points]]
+    x = -37500000
+    y = -50000000
+
+    [[input.points]]
+    x = -12500000
+    y = -50000000
+
+    [[input.points]]
+    x = 12500000
+    y = -50000000
+
+    [[input.points]]
+    x = 37500000
+    y = -50000000
+
+    [[input.points]]
+    x = 62500000
+    y = -50000000
+
+    [[input.points]]
+    x = 87500000
+    y = -50000000
+
+    [[input.points]]
+    x = -100000000
+    y = -25000000
+
+    [[input.points]]
+    x = -75000000
+    y = -25000000
+
+    [[input.points]]
+    x = -50000000
+    y = -25000000
+
+    [[input.points]]
+    x = -25000000
+    y = -25000000
+
+    [[input.points]]
+    x = 0
+    y = -25000000
+
+    [[input.points]]
+    x = 25000000
+    y = -25000000
+
+    [[input.points]]
+    x = 50000000
+    y = -25000000
+
+    [[input.points]]
+    x = 75000000
+    y = -25000000
+
+    [[input.points]]
+    x = 100000000
+    y = -25000000
+
+    [[input.points]]
+    x = -100000000
+    y = 0
+
+    [[input.points]]
+    x = -75000000
+    y = 0
+
+    [[input.points]]
+    x = -50000000
+    y = 0
+
+    [[input.points]]
+    x = -25000000
+    y = 0
+
+    [[input.points]]
+    x = 0
+    y = 0
+
+    [[input.points]]
+    x = 25000000
+    y = 0
+
+    [[input.points]]
+    x = 50000000
+    y = 0
+
+    [[input.points]]
+    x = 75000000
+    y = 0
+
+    [[input.points]]
+    x = 100000000
+    y = 0
+
+    [[input.points]]
+    x = -100000000
+    y = 25000000
+
+    [[input.points]]
+    x = -75000000
+    y = 25000000
+
+    [[input.points]]
+    x = -50000000
+    y = 25000000
+
+    [[input.points]]
+    x = -25000000
+    y = 25000000
+
+    [[input.points]]
+    x = 0
+    y = 25000000
+
+    [[input.points]]
+    x = 25000000
+    y = 25000000
+
+    [[input.points]]
+    x = 50000000
+    y = 25000000
+
+    [[input.points]]
+    x = 75000000
+    y = 25000000
+
+    [[input.points]]
+    x = 100000000
+    y = 25000000
+
+    [[input.points]]
+    x = -87500000
+    y = 50000000
+
+    [[input.points]]
+    x = -62500000
+    y = 50000000
+
+    [[input.points]]
+    x = -37500000
+    y = 50000000
+
+    [[input.points]]
+    x = -12500000
+    y = 50000000
+
+    [[input.points]]
+    x = 12500000
+    y = 50000000
+
+    [[input.points]]
+    x = 37500000
+    y = 50000000
+
+    [[input.points]]
+    x = 62500000
+    y = 50000000
+
+    [[input.points]]
+    x = 87500000
+    y = 50000000
