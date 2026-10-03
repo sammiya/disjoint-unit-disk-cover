@@ -135,8 +135,70 @@ struct CacheState {
   }
 };
 
-struct SearchProgress {
+// A discharged rectangle is replaced by a single safe center. Restore it when
+// backtracking, since that center need not be safe in a sibling search branch.
+struct DischargeRestore {
+  std::vector<IntRect> &rects;
+  std::vector<std::int64_t> &longest_sides;
+  std::vector<IntScaledPoint> &centers;
+  CacheState &cache;
+  std::vector<std::pair<size_t, IntRect>> previous_rects;
+
+  void Fix(size_t i, const IntScaledPoint &center) {
+    previous_rects.emplace_back(i, rects[i]);
+    rects[i] = {center.x, center.y, center.x, center.y};
+    longest_sides[i] = 0;
+    centers[i] = center;
+    cache.InvalidateRow(i);
+  }
+
+  ~DischargeRestore() {
+    for (const auto &[i, rect] : previous_rects) {
+      rects[i] = rect;
+      longest_sides[i] = std::max(rect.width(), rect.height());
+      centers[i] = RectCenter(rect);
+      cache.InvalidateRow(i);
+    }
+  }
 };
+
+bool TryDischargeOne(const std::vector<std::vector<IntScaledPoint>> &groups,
+                     const std::vector<IntRect> &rects,
+                     std::int64_t scale_sq, DischargeRestore &restore) {
+  for (size_t i = 0; i < groups.size(); ++i) {
+    const auto &rect = rects[i];
+    if (rect.width() == 0 && rect.height() == 0) {
+      continue;
+    }
+    const std::array<IntScaledPoint, 4> corners{
+        IntScaledPoint{rect.xmin, rect.ymin},
+        IntScaledPoint{rect.xmin, rect.ymax},
+        IntScaledPoint{rect.xmax, rect.ymin},
+        IntScaledPoint{rect.xmax, rect.ymax},
+    };
+    for (const auto &center : corners) {
+      if (!std::all_of(groups[i].begin(), groups[i].end(), [&](const auto &p) {
+            return IntDistanceSquared(center, p) < scale_sq;
+          })) {
+        continue;
+      }
+      // The witness must be separated from every possible remaining center,
+      // not just from the other rectangles' midpoints.
+      bool safe = true;
+      for (size_t j = 0; j < groups.size(); ++j) {
+        if (j != i && PointRectDistanceLess(rects[j], center, 4 * scale_sq)) {
+          safe = false;
+          break;
+        }
+      }
+      if (safe) {
+        restore.Fix(i, center);
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 SearchStatus
 SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
@@ -144,10 +206,17 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
                  std::vector<std::int64_t> &longest_sides,
                  std::vector<IntScaledPoint> &centers, CacheState &cache,
                  std::optional<size_t> last_split_index, std::int64_t scale,
+                 SearchOptions options,
                  std::vector<IntScaledPoint> &solution) {
   const size_t n = groups.size();
   const std::int64_t scale_sq = scale * scale;
   const std::int64_t four_scale_sq = 4 * scale_sq;
+
+  DischargeRestore restore{rects, longest_sides, centers, cache, {}};
+  if (options.center_discharge) {
+    while (TryDischargeOne(groups, rects, scale_sq, restore)) {
+    }
+  }
 
   bool covers_all = true;
   for (size_t i = 0; i < n && covers_all; ++i) {
@@ -245,7 +314,8 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
 
     const auto child_status =
         SearchRectangles(
-            groups, rects, longest_sides, centers, cache, idx, scale, solution);
+            groups, rects, longest_sides, centers, cache, idx, scale, options,
+            solution);
     if (child_status == SearchStatus::kCoverable) {
       return SearchStatus::kCoverable;
     }
@@ -266,7 +336,7 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
 
 SearchResult
 Search(const std::vector<std::vector<IntScaledPoint>> &point_groups_scaled,
-       std::int64_t scale) {
+       std::int64_t scale, SearchOptions options) {
   if (point_groups_scaled.empty()) {
     throw std::invalid_argument("at least one group of points is required");
   }
@@ -328,7 +398,7 @@ Search(const std::vector<std::vector<IntScaledPoint>> &point_groups_scaled,
   std::vector<IntScaledPoint> solution;
   const auto status = SearchRectangles(point_groups_scaled, feasible_rects,
                                        longest_sides, centers, cache,
-                                       std::nullopt, scale, solution);
+                                       std::nullopt, scale, options, solution);
   switch (status) {
   case SearchStatus::kCoverable:
     return SearchResult{SearchStatus::kCoverable,
