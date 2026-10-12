@@ -49,11 +49,9 @@ CGAL requires system packages (Boost, GMP, MPFR, Eigen) available to CMake.
 ```
 
 `--verbose` enables info-level progress logs.
-`--center-discharge` enables an optional search optimization: fix a center once
-it covers its assigned points and stays at least two radii from every point
-in every other center rectangle. Such centers no longer need subdivision.
-The implementation tries the four corners of each rectangle as candidates.
-Without this flag, the original search is used.
+`--center-discharge` enables an optional optimization that fixes a center when
+it covers its assigned points and stays at least two radii from every other
+center rectangle.
 
 Saved reports include the exact input coordinates under `[input]`.
 
