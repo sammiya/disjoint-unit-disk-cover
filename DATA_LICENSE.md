@@ -8,8 +8,8 @@ Files not listed here are not covered by this document.
 - **Files**:
   - [`examples/offset_grid_44_points.toml`](./examples/offset_grid_44_points.toml)
   - [`examples/reports/offset_grid_44_points.report.toml`](./examples/reports/offset_grid_44_points.report.toml)
-  - [`examples/reports/center_discharge/02500_on.report.toml`](./examples/reports/center_discharge/02500_on.report.toml)
-  - [`examples/reports/center_discharge/02532_on.report.toml`](./examples/reports/center_discharge/02532_on.report.toml)
+  - [`examples/reports/offset_grid_44_points_a02500.report.toml`](./examples/reports/offset_grid_44_points_a02500.report.toml)
+  - [`examples/reports/offset_grid_44_points_a02532.report.toml`](./examples/reports/offset_grid_44_points_a02532.report.toml)
 - **Origin**: Discovered by Takuto Nakai. The additional reports use the same construction with different grid spacings.
 - **License**: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
@@ -22,7 +22,7 @@ For questions about this repository (including licensing), please contact the ma
 ## 43-Point Configuration (CC BY 4.0)
 
 - **Files**:
-  - [`examples/reports/center_discharge/43_02500_on.report.toml`](./examples/reports/center_discharge/43_02500_on.report.toml)
+  - [`examples/reports/offset_grid_43_points.report.toml`](./examples/reports/offset_grid_43_points.report.toml)
 - **Origin**: Found by Shuya Bundo, based on Takuto Nakai's 44-point configuration and geometric observation involving a small square.
 - **License**: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
