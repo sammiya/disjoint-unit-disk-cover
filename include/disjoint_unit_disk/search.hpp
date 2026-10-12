@@ -21,12 +21,8 @@ struct SearchResult {
       sample_centers; // only when status == kCoverable or kUndecided
 };
 
-struct SearchOptions {
-  bool center_discharge = false;
-};
-
 SearchResult
 Search(const std::vector<std::vector<IntScaledPoint>> &point_groups_scaled,
-       std::int64_t scale, SearchOptions options = {});
+       std::int64_t scale, bool center_discharge = false);
 
 } // namespace disjoint_unit_disk

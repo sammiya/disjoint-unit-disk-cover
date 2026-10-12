@@ -142,16 +142,16 @@ BuildGroups(const std::vector<IntScaledPoint> &points,
 
 SearchResult SearchPartition(const std::vector<IntScaledPoint> &points,
                              const std::vector<std::vector<size_t>> &partition,
-                             std::int64_t scale, SearchOptions options) {
+                             std::int64_t scale, bool center_discharge) {
   const auto groups = BuildGroups(points, partition);
-  return Search(groups, scale, options);
+  return Search(groups, scale, center_discharge);
 }
 
 } // namespace
 
 DisjointCoverReport
 AnalyzeDisjointUnitDiskCover(const std::vector<IntScaledPoint> &scaled_points,
-                             std::int64_t scale, SearchOptions options) {
+                             std::int64_t scale, bool center_discharge) {
   EnsureNonEmptyPoints(scaled_points);
   ValidateOverflowFreeExpansion(scaled_points, scale);
 
@@ -172,7 +172,8 @@ AnalyzeDisjointUnitDiskCover(const std::vector<IntScaledPoint> &scaled_points,
                  "Analyzing partition " + std::to_string(partition_idx + 1) +
                      "/" + std::to_string(partitions.size()));
     const auto &partition = partitions[partition_idx];
-    const auto result = SearchPartition(scaled_points, partition, scale, options);
+    const auto result =
+        SearchPartition(scaled_points, partition, scale, center_discharge);
     if (result.status == SearchStatus::kCoverable) {
       sample_partition = partition;
       sample_centers = result.sample_centers;
@@ -199,7 +200,7 @@ AnalyzeDisjointUnitDiskCover(const std::vector<IntScaledPoint> &scaled_points,
 DisjointCoverReport AnalyzeDisjointUnitDiskCoverWithGroups(
     const std::vector<IntScaledPoint> &scaled_points,
     const std::vector<size_t> &group_ids, std::int64_t scale,
-    SearchOptions options) {
+    bool center_discharge) {
   EnsureNonEmptyPoints(scaled_points);
   ValidateOverflowFreeExpansion(scaled_points, scale);
   if (group_ids.size() != scaled_points.size()) {
@@ -218,7 +219,7 @@ DisjointCoverReport AnalyzeDisjointUnitDiskCoverWithGroups(
     }
     partition[it->second].push_back(idx);
   }
-  auto result = SearchPartition(scaled_points, partition, scale, options);
+  auto result = SearchPartition(scaled_points, partition, scale, center_discharge);
   CoverStatus status = CoverStatus::kNonCoverable;
   switch (result.status) {
   case SearchStatus::kCoverable:

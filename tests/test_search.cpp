@@ -10,19 +10,31 @@
 namespace disjoint_unit_disk {
 namespace {
 
+void CheckWitness(const std::vector<std::vector<IntScaledPoint>> &groups,
+                  std::int64_t scale, const SearchResult &result) {
+  ASSERT_TRUE(result.sample_centers.has_value());
+  const auto &centers = result.sample_centers->centers;
+  ASSERT_EQ(centers.size(), groups.size());
+  EXPECT_EQ(result.sample_centers->scale, scale);
+  for (size_t i = 0; i < groups.size(); ++i) {
+    for (const auto &point : groups[i]) {
+      EXPECT_LT(IntDistanceSquared(centers[i], point), scale * scale);
+    }
+    for (size_t j = 0; j < i; ++j) {
+      EXPECT_GE(IntDistanceSquared(centers[i], centers[j]), 4 * scale * scale);
+    }
+  }
+}
+
 TEST(SearchTest, ReturnsDisksForSeparatedSingletonGroups) {
   std::vector<std::vector<IntScaledPoint>> groups{{IntScaledPoint{-1, 0}},
                                                   {IntScaledPoint{1, 0}}};
-  auto result = Search(groups, 10);
-  ASSERT_EQ(result.status, SearchStatus::kCoverable);
-  ASSERT_TRUE(result.sample_centers.has_value());
-  ASSERT_EQ(result.sample_centers->centers.size(), groups.size());
-  const auto &centers = result.sample_centers->centers;
-  const double scale_d = static_cast<double>(result.sample_centers->scale);
-  const double dx = static_cast<double>(centers[0].x - centers[1].x) / scale_d;
-  const double dy = static_cast<double>(centers[0].y - centers[1].y) / scale_d;
-  const double distance_sq = dx * dx + dy * dy;
-  EXPECT_GE(distance_sq, 4.0);
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    const auto result = Search(groups, 10, center_discharge);
+    ASSERT_EQ(result.status, SearchStatus::kCoverable);
+    CheckWitness(groups, 10, result);
+  }
 }
 
 TEST(SearchTest, RectanglesPruningWhenGroupsTooClose) {
@@ -38,12 +50,20 @@ TEST(SearchTest, RectanglesPruningWhenGroupsTooClose) {
       {27, 0},
       {27, 19},
   };
-  EXPECT_EQ(Search({group_a, group_b}, 10).status, SearchStatus::kNonCoverable);
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    EXPECT_EQ(Search({group_a, group_b}, 10, center_discharge).status,
+              SearchStatus::kNonCoverable);
+  }
 }
 
 TEST(SearchTest, ReturnsNoneWhenGroupRectanglesDisjoint) {
   std::vector<IntScaledPoint> group{{0, 0}, {50, 0}};
-  EXPECT_EQ(Search({group}, 10).status, SearchStatus::kNonCoverable);
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    EXPECT_EQ(Search({group}, 10, center_discharge).status,
+              SearchStatus::kNonCoverable);
+  }
 }
 
 TEST(SearchTest, RequiresAtLeastOneGroup) {
@@ -61,58 +81,52 @@ TEST(SearchTest, NonIntegerCenterInstanceReturnsUndecided) {
   std::vector<std::vector<IntScaledPoint>> groups{
       {{8, 0}, {0, 8}, {11, 11}},
   };
-  const auto result = Search(groups, 7);
-  EXPECT_EQ(result.status, SearchStatus::kUndecided);
-  ASSERT_TRUE(result.sample_centers.has_value());
-  EXPECT_TRUE(result.sample_centers->centers.empty());
-}
-
-void CheckWitness(const std::vector<std::vector<IntScaledPoint>> &groups,
-                  std::int64_t scale, const SearchResult &result) {
-  ASSERT_TRUE(result.sample_centers.has_value());
-  const auto &centers = result.sample_centers->centers;
-  ASSERT_EQ(centers.size(), groups.size());
-  EXPECT_EQ(result.sample_centers->scale, scale);
-  for (size_t i = 0; i < groups.size(); ++i) {
-    for (const auto &point : groups[i]) {
-      EXPECT_LT(IntDistanceSquared(centers[i], point), scale * scale);
-    }
-    for (size_t j = 0; j < i; ++j) {
-      EXPECT_GE(IntDistanceSquared(centers[i], centers[j]), 4 * scale * scale);
-    }
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    const auto result = Search(groups, 7, center_discharge);
+    EXPECT_EQ(result.status, SearchStatus::kUndecided);
+    ASSERT_TRUE(result.sample_centers.has_value());
+    EXPECT_TRUE(result.sample_centers->centers.empty());
   }
 }
 
-TEST(SearchTest, CenterDischargePreservesRegressionResults) {
-  struct Case {
-    std::vector<std::vector<IntScaledPoint>> groups;
-    std::int64_t scale;
-    SearchStatus status;
+TEST(SearchTest, CenterDischargeHandlesSeveralGroups) {
+  std::vector<std::vector<IntScaledPoint>> groups{
+      {{-20, 0}}, {{0, 0}}, {{20, 0}},
   };
-  const std::vector<Case> cases{
-      {{{{-1, 0}}, {{1, 0}}}, 10, SearchStatus::kCoverable},
-      {{{{-20, 0}}, {{0, 0}}, {{20, 0}}}, 10, SearchStatus::kCoverable},
-      {{{{0, 0}, {50, 0}}}, 10, SearchStatus::kNonCoverable},
-      {{{{0, 0}, {0, 19}, {19, 0}, {19, 19}},
-        {{8, 0}, {8, 19}, {27, 0}, {27, 19}}}, 10,
-       SearchStatus::kNonCoverable},
-      // A distant group may be fixed, but must not change the other group's
-      // answer. In particular, boundary points are not covered by open disks.
-      {{{{100, 100}}, {{8, 0}, {0, 8}, {11, 11}}}, 7,
-       SearchStatus::kUndecided},
-      {{{{100, 100}}, {{1, 0}, {0, 1}, {1, 1}}}, 1,
-       SearchStatus::kUndecided},
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    const auto result = Search(groups, 10, center_discharge);
+    ASSERT_EQ(result.status, SearchStatus::kCoverable);
+    CheckWitness(groups, 10, result);
+  }
+}
+
+TEST(SearchTest, CenterDischargePreservesUndecidedForNonIntegerCenter) {
+  // Fixing a distant group's center must not change the remaining answer.
+  std::vector<std::vector<IntScaledPoint>> groups{
+      {{100, 100}}, {{8, 0}, {0, 8}, {11, 11}},
   };
-  for (const auto &test : cases) {
-    for (bool enabled : {false, true}) {
-      SCOPED_TRACE(enabled);
-      const auto result = Search(test.groups, test.scale,
-                                 {.center_discharge = enabled});
-      EXPECT_EQ(result.status, test.status);
-      if (result.status == SearchStatus::kCoverable) {
-        CheckWitness(test.groups, test.scale, result);
-      }
-    }
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    const auto result = Search(groups, 7, center_discharge);
+    EXPECT_EQ(result.status, SearchStatus::kUndecided);
+    ASSERT_TRUE(result.sample_centers.has_value());
+    EXPECT_TRUE(result.sample_centers->centers.empty());
+  }
+}
+
+TEST(SearchTest, CenterDischargeDoesNotCoverBoundaryPoints) {
+  // Integer centers can cover the triangle only with boundary points.
+  std::vector<std::vector<IntScaledPoint>> groups{
+      {{100, 100}}, {{1, 0}, {0, 1}, {1, 1}},
+  };
+  for (bool center_discharge : {false, true}) {
+    SCOPED_TRACE(center_discharge);
+    const auto result = Search(groups, 1, center_discharge);
+    EXPECT_EQ(result.status, SearchStatus::kUndecided);
+    ASSERT_TRUE(result.sample_centers.has_value());
+    EXPECT_TRUE(result.sample_centers->centers.empty());
   }
 }
 
@@ -155,8 +169,9 @@ TEST(SearchTest, CenterDischargeDoesNotRejectSmallIntegerCovers) {
         }
       }
     }
-    for (bool enabled : {false, true}) {
-      const auto result = Search(groups, scale, {.center_discharge = enabled});
+    for (bool center_discharge : {false, true}) {
+      SCOPED_TRACE(center_discharge);
+      const auto result = Search(groups, scale, center_discharge);
       if (has_integer_cover) {
         EXPECT_NE(result.status, SearchStatus::kNonCoverable);
       }

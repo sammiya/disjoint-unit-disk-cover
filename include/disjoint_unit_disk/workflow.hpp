@@ -23,11 +23,11 @@ struct DisjointCoverReport {
 
 DisjointCoverReport
 AnalyzeDisjointUnitDiskCover(const std::vector<IntScaledPoint> &scaled_points,
-                             std::int64_t scale, SearchOptions options = {});
+                             std::int64_t scale, bool center_discharge = false);
 
 DisjointCoverReport AnalyzeDisjointUnitDiskCoverWithGroups(
     const std::vector<IntScaledPoint> &scaled_points,
     const std::vector<size_t> &group_ids, std::int64_t scale,
-    SearchOptions options = {});
+    bool center_discharge = false);
 
 } // namespace disjoint_unit_disk

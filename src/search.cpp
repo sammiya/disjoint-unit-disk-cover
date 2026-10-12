@@ -135,36 +135,9 @@ struct CacheState {
   }
 };
 
-// A discharged rectangle is replaced by a single safe center. Restore it when
-// backtracking, since that center need not be safe in a sibling search branch.
-struct DischargeRestore {
-  std::vector<IntRect> &rects;
-  std::vector<std::int64_t> &longest_sides;
-  std::vector<IntScaledPoint> &centers;
-  CacheState &cache;
-  std::vector<std::pair<size_t, IntRect>> previous_rects;
-
-  void Fix(size_t i, const IntScaledPoint &center) {
-    previous_rects.emplace_back(i, rects[i]);
-    rects[i] = {center.x, center.y, center.x, center.y};
-    longest_sides[i] = 0;
-    centers[i] = center;
-    cache.InvalidateRow(i);
-  }
-
-  ~DischargeRestore() {
-    for (const auto &[i, rect] : previous_rects) {
-      rects[i] = rect;
-      longest_sides[i] = std::max(rect.width(), rect.height());
-      centers[i] = RectCenter(rect);
-      cache.InvalidateRow(i);
-    }
-  }
-};
-
-bool TryDischargeOne(const std::vector<std::vector<IntScaledPoint>> &groups,
-                     const std::vector<IntRect> &rects,
-                     std::int64_t scale_sq, DischargeRestore &restore) {
+std::optional<std::pair<size_t, IntScaledPoint>>
+FindFixableCenter(const std::vector<std::vector<IntScaledPoint>> &groups,
+                 const std::vector<IntRect> &rects, std::int64_t scale_sq) {
   for (size_t i = 0; i < groups.size(); ++i) {
     const auto &rect = rects[i];
     if (rect.width() == 0 && rect.height() == 0) {
@@ -192,12 +165,11 @@ bool TryDischargeOne(const std::vector<std::vector<IntScaledPoint>> &groups,
         }
       }
       if (safe) {
-        restore.Fix(i, center);
-        return true;
+        return std::pair{i, center};
       }
     }
   }
-  return false;
+  return std::nullopt;
 }
 
 SearchStatus
@@ -206,15 +178,34 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
                  std::vector<std::int64_t> &longest_sides,
                  std::vector<IntScaledPoint> &centers, CacheState &cache,
                  std::optional<size_t> last_split_index, std::int64_t scale,
-                 SearchOptions options,
+                 bool center_discharge,
                  std::vector<IntScaledPoint> &solution) {
   const size_t n = groups.size();
   const std::int64_t scale_sq = scale * scale;
   const std::int64_t four_scale_sq = 4 * scale_sq;
 
-  DischargeRestore restore{rects, longest_sides, centers, cache, {}};
-  if (options.center_discharge) {
-    while (TryDischargeOne(groups, rects, scale_sq, restore)) {
+  if (center_discharge) {
+    if (const auto fixed = FindFixableCenter(groups, rects, scale_sq)) {
+      const auto [i, center] = *fixed;
+      const IntRect original_rect = rects[i];
+      const std::int64_t original_longest = longest_sides[i];
+      const IntScaledPoint original_center = centers[i];
+
+      rects[i] = {center.x, center.y, center.x, center.y};
+      longest_sides[i] = 0;
+      centers[i] = center;
+      cache.InvalidateRow(i);
+
+      const auto status = SearchRectangles(
+          groups, rects, longest_sides, centers, cache, last_split_index, scale,
+          center_discharge, solution);
+
+      // The fixed center is only guaranteed to be safe in this search branch.
+      rects[i] = original_rect;
+      longest_sides[i] = original_longest;
+      centers[i] = original_center;
+      cache.InvalidateRow(i);
+      return status;
     }
   }
 
@@ -312,10 +303,9 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
     centers[idx] = RectCenter(subrect);
     cache.InvalidateRow(idx);
 
-    const auto child_status =
-        SearchRectangles(
-            groups, rects, longest_sides, centers, cache, idx, scale, options,
-            solution);
+    const auto child_status = SearchRectangles(
+        groups, rects, longest_sides, centers, cache, idx, scale,
+        center_discharge, solution);
     if (child_status == SearchStatus::kCoverable) {
       return SearchStatus::kCoverable;
     }
@@ -336,7 +326,7 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
 
 SearchResult
 Search(const std::vector<std::vector<IntScaledPoint>> &point_groups_scaled,
-       std::int64_t scale, SearchOptions options) {
+       std::int64_t scale, bool center_discharge) {
   if (point_groups_scaled.empty()) {
     throw std::invalid_argument("at least one group of points is required");
   }
@@ -398,7 +388,8 @@ Search(const std::vector<std::vector<IntScaledPoint>> &point_groups_scaled,
   std::vector<IntScaledPoint> solution;
   const auto status = SearchRectangles(point_groups_scaled, feasible_rects,
                                        longest_sides, centers, cache,
-                                       std::nullopt, scale, options, solution);
+                                       std::nullopt, scale, center_discharge,
+                                       solution);
   switch (status) {
   case SearchStatus::kCoverable:
     return SearchResult{SearchStatus::kCoverable,

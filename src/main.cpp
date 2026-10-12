@@ -172,8 +172,8 @@ int main(int argc, char **argv) {
     app.add_flag("--verbose", verbose,
                  "Enable info-level logging during enumeration/search.");
 
-    disjoint_unit_disk::SearchOptions search_options;
-    app.add_flag("--center-discharge", search_options.center_discharge,
+    bool center_discharge = false;
+    app.add_flag("--center-discharge", center_discharge,
                  "Fix centers that cannot interfere with any other center "
                  "rectangle.");
 
@@ -194,10 +194,10 @@ int main(int argc, char **argv) {
     disjoint_unit_disk::DisjointCoverReport report;
     if (parsed.group_ids.has_value()) {
       report = disjoint_unit_disk::AnalyzeDisjointUnitDiskCoverWithGroups(
-          parsed.points, *parsed.group_ids, parsed.scale, search_options);
+          parsed.points, *parsed.group_ids, parsed.scale, center_discharge);
     } else {
       report = disjoint_unit_disk::AnalyzeDisjointUnitDiskCover(
-          parsed.points, parsed.scale, search_options);
+          parsed.points, parsed.scale, center_discharge);
     }
 
     PrintReportSummary(report);
