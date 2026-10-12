@@ -12,7 +12,11 @@ This repository contains a self-contained research implementation for analyzing 
   - `concentric_points_coverable.toml` – 45 points on concentric circles; Coverable
   - `concentric_points_noncoverable.toml` – 45 points on concentric circles; NonCoverable
   - `concentric_points_coverable_with_groups.toml` – same as above, with pre-assigned groups
-  - `reports/` – precomputed output reports for the above
+  - `reports/` – precomputed output reports
+    - `center_discharge/` – additional reports produced with `--center-discharge`
+      - `02500_on.report.toml` – 44-point offset grid with spacing 0.2500; NonCoverable
+      - `02532_on.report.toml` – 44-point offset grid with spacing 0.2532; Coverable
+      - `43_02500_on.report.toml` – 43-point two-sided offset grid with spacing 0.2500; NonCoverable
 - `tools/` – scripts to generate example inputs
 - `third_party/` – git submodules (`CLI11`, `toml++`, `googletest`, `cgal`)
 
@@ -48,7 +52,10 @@ CGAL requires system packages (Boost, GMP, MPFR, Eigen) available to CMake.
 `--center-discharge` enables an optional search optimization: fix a center once
 it covers its assigned points and stays at least two radii from every point
 in every other center rectangle. Such centers no longer need subdivision.
+The implementation tries the four corners of each rectangle as candidates.
 Without this flag, the original search is used.
+
+Saved reports include the exact input coordinates under `[input]`.
 
 ## Input file format (TOML)
 
@@ -112,6 +119,7 @@ Point configuration data and generated reports are licensed separately (see [DAT
 | Component               | License                                                            |
 | ----------------------- | ------------------------------------------------------------------ |
 | Source code             | GPL-3.0-only — See [LICENSE](./LICENSE)                            |
+| 43-point data & reports | CC BY 4.0 — See [DATA_LICENSE.md](./DATA_LICENSE.md)               |
 | 44-point data & reports | CC BY 4.0 — See [DATA_LICENSE.md](./DATA_LICENSE.md)               |
 | 45-point data & reports | Derived from prior work — See [DATA_LICENSE.md](./DATA_LICENSE.md) |
 | Third-party libraries   | See each library's LICENSE in `third_party/`                       |

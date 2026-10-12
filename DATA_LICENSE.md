@@ -8,7 +8,9 @@ Files not listed here are not covered by this document.
 - **Files**:
   - [`examples/offset_grid_44_points.toml`](./examples/offset_grid_44_points.toml)
   - [`examples/reports/offset_grid_44_points.report.toml`](./examples/reports/offset_grid_44_points.report.toml)
-- **Origin**: Discovered by Takuto Nakai
+  - [`examples/reports/center_discharge/02500_on.report.toml`](./examples/reports/center_discharge/02500_on.report.toml)
+  - [`examples/reports/center_discharge/02532_on.report.toml`](./examples/reports/center_discharge/02532_on.report.toml)
+- **Origin**: Discovered by Takuto Nakai. The additional reports use the same construction with different grid spacings.
 - **License**: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
 **Attribution**: Please credit Takuto Nakai as the discoverer and cite the associated paper:
@@ -16,6 +18,15 @@ Files not listed here are not covered by this document.
 - Takuto Nakai and Shuya Bundo, "A 44-Point Configuration Not Coverable by Disjoint Unit Disks", accepted at EuroCG 2026.
 
 For questions about this repository (including licensing), please contact the maintainer: Shuya Bundo.
+
+## 43-Point Configuration (CC BY 4.0)
+
+- **Files**:
+  - [`examples/reports/center_discharge/43_02500_on.report.toml`](./examples/reports/center_discharge/43_02500_on.report.toml)
+- **Origin**: Found by Shuya Bundo, based on Takuto Nakai's 44-point configuration and geometric observation involving a small square.
+- **License**: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+
+**Attribution**: Please credit Shuya Bundo for the 43-point configuration and Takuto Nakai for the underlying 44-point configuration and geometric observation, and cite the EuroCG 2026 paper listed above.
 
 ## 45-Point Configuration (Derived from prior work)
 
