@@ -191,6 +191,7 @@ SearchRectangles(const std::vector<std::vector<IntScaledPoint>> &groups,
       const std::int64_t original_longest = longest_sides[i];
       const IntScaledPoint original_center = centers[i];
 
+      // Use a zero-width, zero-height IntRect to represent the fixed point.
       rects[i] = {center.x, center.y, center.x, center.y};
       longest_sides[i] = 0;
       centers[i] = center;
