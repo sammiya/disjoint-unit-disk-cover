@@ -1,3 +1,4 @@
+center_discharge = false
 partitions_evaluated = 13506026
 status = 'non_coverable'
 

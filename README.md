@@ -50,7 +50,8 @@ CGAL requires system packages (Boost, GMP, MPFR, Eigen) available to CMake.
 it covers its assigned points and stays at least two radii from every other
 center rectangle.
 
-Saved reports include the exact input coordinates under `[input]`.
+Saved reports record `center_discharge` at the top level and the exact input
+coordinates under `[input]`.
 
 ## Input file format (TOML)
 

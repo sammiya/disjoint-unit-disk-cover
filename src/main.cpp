@@ -80,7 +80,8 @@ void PrintReportSummary(const disjoint_unit_disk::DisjointCoverReport &report) {
 } // namespace
 
 toml::table BuildReportToml(const disjoint_unit_disk::DisjointCoverReport &report,
-                            const disjoint_unit_disk::ParsedPoints &parsed) {
+                            const disjoint_unit_disk::ParsedPoints &parsed,
+                            bool center_discharge) {
   toml::table root;
 
   auto status_to_string = [](disjoint_unit_disk::CoverStatus s) -> std::string_view {
@@ -95,6 +96,7 @@ toml::table BuildReportToml(const disjoint_unit_disk::DisjointCoverReport &repor
     }
   };
 
+  root.insert("center_discharge", center_discharge);
   root.insert("status", status_to_string(report.status));
   if (report.partitions_evaluated.has_value()) {
     root.insert("partitions_evaluated",
@@ -203,7 +205,7 @@ int main(int argc, char **argv) {
     PrintReportSummary(report);
     if (!report_path.empty()) {
       try {
-        toml::table report_toml = BuildReportToml(report, parsed);
+        toml::table report_toml = BuildReportToml(report, parsed, center_discharge);
         std::ofstream ofs(report_path, std::ios::trunc);
         if (!ofs) {
           std::cerr << "Error: failed to open report path: " << report_path
