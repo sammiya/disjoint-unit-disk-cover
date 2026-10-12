@@ -140,9 +140,12 @@ FindFixableCenter(const std::vector<std::vector<IntScaledPoint>> &groups,
                  const std::vector<IntRect> &rects, std::int64_t scale_sq) {
   for (size_t i = 0; i < groups.size(); ++i) {
     const auto &rect = rects[i];
+    // A singleton rectangle represents an already fixed center.
     if (rect.width() == 0 && rect.height() == 0) {
       continue;
     }
+    // Try the four corners as inexpensive candidates; if none works, continue
+    // with the usual search.
     const std::array<IntScaledPoint, 4> corners{
         IntScaledPoint{rect.xmin, rect.ymin},
         IntScaledPoint{rect.xmin, rect.ymax},
@@ -150,8 +153,8 @@ FindFixableCenter(const std::vector<std::vector<IntScaledPoint>> &groups,
         IntScaledPoint{rect.xmax, rect.ymax},
     };
     for (const auto &center : corners) {
-      if (!std::all_of(groups[i].begin(), groups[i].end(), [&](const auto &p) {
-            return IntDistanceSquared(center, p) < scale_sq;
+      if (std::any_of(groups[i].begin(), groups[i].end(), [&](const auto &p) {
+            return IntDistanceSquared(center, p) >= scale_sq;
           })) {
         continue;
       }
