@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <random>
 #include <utility>
 #include <vector>
 
@@ -130,20 +129,35 @@ TEST(SearchTest, CenterDischargeDoesNotCoverBoundaryPoints) {
   }
 }
 
-TEST(SearchTest, CenterDischargeDoesNotRejectSmallIntegerCovers) {
-  // Exhaust all integer centers independently on reproducible small inputs.
-  // A continuous cover with no integer witness may still be undecided.
-  std::mt19937 random(20261003);
+TEST(SearchTest, CenterDischargeMatchesExhaustiveIntegerCenters) {
+  struct TestCase {
+    const char *name;
+    std::vector<std::vector<IntScaledPoint>> groups;
+    SearchStatus expected_status;
+  };
+  const TestCase cases[]{
+      // The outer centers must move apart to leave room for the middle disk.
+      {"chain",
+       {{{0, -1}, {0, 1}}, {{4, -1}, {4, 1}}, {{8, -1}, {8, 1}}},
+       SearchStatus::kCoverable},
+      // No integer cover exists, but centers (-11/4,0), (3,7/4), (35/4,0) work.
+      {"tight chain",
+       {{{0, -1}, {0, 1}}, {{3, -1}, {3, 1}}, {{6, -1}, {6, 1}}},
+       SearchStatus::kUndecided},
+      // The only integer cover has centers (-2,-1), (2,4), (6,-1).
+      {"staggered groups",
+       {{{0, -1}, {0, 1}}, {{2, 2}, {2, 4}}, {{4, -1}, {4, 1}}},
+       SearchStatus::kCoverable},
+  };
   constexpr std::int64_t scale = 3;
-  for (int trial = 0; trial < 200; ++trial) {
-    SCOPED_TRACE(trial);
-    std::vector<std::vector<IntScaledPoint>> groups(3);
+  for (const auto &test_case : cases) {
+    SCOPED_TRACE(test_case.name);
+    const auto &groups = test_case.groups;
+
+    // Enumerate integer centers independently of the rectangle search.
     std::vector<std::vector<IntScaledPoint>> possible_centers;
-    for (auto &group : groups) {
-      const auto x = static_cast<std::int64_t>(random() % 17) - 8;
-      const auto y = static_cast<std::int64_t>(random() % 17) - 8;
-      group = {{x, y}, {x + static_cast<std::int64_t>(random() % 5) - 2,
-                       y + static_cast<std::int64_t>(random() % 5) - 2}};
+    for (const auto &group : groups) {
+      const auto [x, y] = group.front();
       std::vector<IntScaledPoint> centers;
       for (auto cx = x - scale; cx <= x + scale; ++cx) {
         for (auto cy = y - scale; cy <= y + scale; ++cy) {
@@ -169,12 +183,12 @@ TEST(SearchTest, CenterDischargeDoesNotRejectSmallIntegerCovers) {
         }
       }
     }
+    EXPECT_EQ(has_integer_cover,
+              test_case.expected_status == SearchStatus::kCoverable);
     for (bool center_discharge : {false, true}) {
       SCOPED_TRACE(center_discharge);
       const auto result = Search(groups, scale, center_discharge);
-      if (has_integer_cover) {
-        EXPECT_NE(result.status, SearchStatus::kNonCoverable);
-      }
+      EXPECT_EQ(result.status, test_case.expected_status);
       if (result.status == SearchStatus::kCoverable) {
         EXPECT_TRUE(has_integer_cover);
         CheckWitness(groups, scale, result);
