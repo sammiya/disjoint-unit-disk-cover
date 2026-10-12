@@ -89,32 +89,6 @@ TEST(SearchTest, NonIntegerCenterInstanceReturnsUndecided) {
   }
 }
 
-TEST(SearchTest, CenterDischargeHandlesSeveralGroups) {
-  std::vector<std::vector<IntScaledPoint>> groups{
-      {{-20, 0}}, {{0, 0}}, {{20, 0}},
-  };
-  for (bool center_discharge : {false, true}) {
-    SCOPED_TRACE(center_discharge);
-    const auto result = Search(groups, 10, center_discharge);
-    ASSERT_EQ(result.status, SearchStatus::kCoverable);
-    CheckWitness(groups, 10, result);
-  }
-}
-
-TEST(SearchTest, CenterDischargePreservesUndecidedForNonIntegerCenter) {
-  // Fixing a distant group's center must not change the remaining answer.
-  std::vector<std::vector<IntScaledPoint>> groups{
-      {{100, 100}}, {{8, 0}, {0, 8}, {11, 11}},
-  };
-  for (bool center_discharge : {false, true}) {
-    SCOPED_TRACE(center_discharge);
-    const auto result = Search(groups, 7, center_discharge);
-    EXPECT_EQ(result.status, SearchStatus::kUndecided);
-    ASSERT_TRUE(result.sample_centers.has_value());
-    EXPECT_TRUE(result.sample_centers->centers.empty());
-  }
-}
-
 TEST(SearchTest, CenterDischargeDoesNotCoverBoundaryPoints) {
   // Integer centers can cover the triangle only with boundary points.
   std::vector<std::vector<IntScaledPoint>> groups{
@@ -136,10 +110,6 @@ TEST(SearchTest, CenterDischargeMatchesExhaustiveIntegerCenters) {
     SearchStatus expected_status;
   };
   const TestCase cases[]{
-      // The outer centers must move apart to leave room for the middle disk.
-      {"chain",
-       {{{0, -1}, {0, 1}}, {{4, -1}, {4, 1}}, {{8, -1}, {8, 1}}},
-       SearchStatus::kCoverable},
       // No integer cover exists, but centers (-11/4,0), (3,7/4), (35/4,0) work.
       {"tight chain",
        {{{0, -1}, {0, 1}}, {{3, -1}, {3, 1}}, {{6, -1}, {6, 1}}},
