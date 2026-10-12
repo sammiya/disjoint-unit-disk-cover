@@ -8,9 +8,7 @@ Files not listed here are not covered by this document.
 - **Files**:
   - [`examples/offset_grid_44_points.toml`](./examples/offset_grid_44_points.toml)
   - [`examples/reports/offset_grid_44_points.report.toml`](./examples/reports/offset_grid_44_points.report.toml)
-  - [`examples/reports/offset_grid_44_points_a02500.report.toml`](./examples/reports/offset_grid_44_points_a02500.report.toml)
-  - [`examples/reports/offset_grid_44_points_a02532.report.toml`](./examples/reports/offset_grid_44_points_a02532.report.toml)
-- **Origin**: Discovered by Takuto Nakai. The additional reports use the same construction with different grid spacings.
+- **Origin**: Discovered by Takuto Nakai
 - **License**: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
 **Attribution**: Please credit Takuto Nakai as the discoverer and cite the associated paper:
