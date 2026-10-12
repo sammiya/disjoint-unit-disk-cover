@@ -13,7 +13,7 @@ This repository contains a self-contained research implementation for analyzing 
   - `concentric_points_noncoverable.toml` – 45 points on concentric circles; NonCoverable
   - `concentric_points_coverable_with_groups.toml` – same as above, with pre-assigned groups
   - `reports/` – precomputed output reports
-    - `offset_grid_43_points.report.toml` – 43-point two-sided offset grid with spacing 0.2500; NonCoverable
+    - `offset_grid_43_points.report.toml` – 43-point two-sided offset grid; NonCoverable
 - `tools/` – scripts to generate example inputs
 - `third_party/` – git submodules (`CLI11`, `toml++`, `googletest`, `cgal`)
 
